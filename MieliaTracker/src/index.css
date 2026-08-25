@@ -1,0 +1,90 @@
+body {
+    background-color: #dae5f0;
+    font-family: cursive;
+}
+
+header {
+    background-color: rgb(45, 42, 42);
+    color: white;
+    text-align: center;
+    height: 70px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.moodBoksit {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.valinnat {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+
+    h2 {
+        text-align: center;
+    }
+}
+
+.merkinnat {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 40rem;
+}
+
+.moodBs {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.moodB1 {
+    background-color: #ff0000;
+    border: none;
+    height: 50px;
+    width: 60px;
+    border-radius: 5px;
+    color: white;
+}
+
+.moodB2 {
+    background-color: #ffa500;
+    border: none;
+    height: 50px;
+    width: 60px;
+    border-radius: 5px;
+    color: white;
+}
+
+.moodB3 {
+    background-color: #e8dd08;
+    border: none;
+    height: 50px;
+    width: 60px;
+    border-radius: 5px;
+    color: white;
+}
+
+.moodB4 {
+    background-color: #b9ed59;
+    border: none;
+    height: 50px;
+    width: 60px;
+    border-radius: 5px;
+    color: white;
+}
+
+.moodB5 {
+    background-color: #81ed59;
+    border: none;
+    height: 50px;
+    width: 60px;
+    border-radius: 5px;
+    color: white;
+}
+
