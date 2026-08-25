@@ -43,48 +43,28 @@ header {
     justify-content: center;
 }
 
-.moodB1 {
-    background-color: #ff0000;
+.moodButton {
     border: none;
     height: 50px;
-    width: 60px;
+    width: 50px;
     border-radius: 5px;
     color: white;
 }
 
-.moodB2 {
-    background-color: #ffa500;
-    border: none;
-    height: 50px;
-    width: 60px;
-    border-radius: 5px;
-    color: white;
+.submit {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    button {
+        border: none;
+        background-color: darkorchid;
+        color: white;
+        border-radius: 5px;
+        padding: 5px;
+    }
 }
 
-.moodB3 {
-    background-color: #e8dd08;
-    border: none;
-    height: 50px;
-    width: 60px;
-    border-radius: 5px;
-    color: white;
-}
 
-.moodB4 {
-    background-color: #b9ed59;
-    border: none;
-    height: 50px;
-    width: 60px;
-    border-radius: 5px;
-    color: white;
-}
 
-.moodB5 {
-    background-color: #81ed59;
-    border: none;
-    height: 50px;
-    width: 60px;
-    border-radius: 5px;
-    color: white;
-}
+
 
