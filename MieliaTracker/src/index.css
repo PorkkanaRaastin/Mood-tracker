@@ -35,6 +35,8 @@ header {
     padding: 15px;
     border-radius: 10px;
     width: 40rem;
+    overflow-y: scroll;
+    height: 420px;
 }
 
 .moodBs {
@@ -65,10 +67,13 @@ header {
 }
 
 .merkintaRivi {
-    color: white
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
-
-
-
+.merkintaPvm {
+    margin-right: 15rem;
+}
 
