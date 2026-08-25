@@ -19,19 +19,29 @@ const sleepOptions = [
 
 function App() {
 
-    const [entries, setEntries] = useState([{
-        "date": "2026-06-01",
-        "mood": 3,
-        "id": 1
-    },
-    {
-        "date": "2026-06-03",
-        "mood": 4,
-        "id": 2
-    }])
+    const [entries, setEntries] = useState([])
     const [date, setDate] = useState(new Date().toISOString().split('T')[0])
-    const [mood, setMood] = useState('')
-    const [sleep, setSleep] = useState('')
+    const [mood, setMood] = useState(null)
+    const [sleep, setSleep] = useState(null)
+
+    const handleSubmit = () => {
+        if (!date || mood === null && sleep === null) {
+            alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
+            return
+        }
+
+        const newEntry = { date, mood, sleep }
+
+        setEntries((prev) =>
+            [...prev, newEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
+        )
+
+        setMood(null)
+        setSleep(null)
+    }
+
+    const getMoodColor = (moodValue) =>
+        moodOptions.find((option) => option.value === moodValue)?.color
 
     return (
         <>
@@ -66,12 +76,27 @@ function App() {
                         ))}
                     </div>
                     <div className='submit'>
-                        <button>Lähetä</button>
+                        <button onClick={handleSubmit}>Lähetä</button>
                     </div>
-                    
+
                 </div>
                 <div className="merkinnat">
                     <h2>Viimeisimmät merkinnät</h2>
+                    {entries.length === 0 ? (
+                        <p>Ei vielä merkintöjä.</p>
+                    ) : (
+                        entries.map((entry, index) => (
+                            <div
+                                key={index}
+                                className="merkintaRivi"
+                                style={{ backgroundColor: getMoodColor(entry.mood) }}
+                            >
+                                <span className="merkintaPvm">{entry.date}</span>
+                                <span className="merkintaTieto"> Mieliala: {entry.mood}</span>
+                                <span className="merkintaTieto"> Unen määrä: {entry.sleep} tuntia</span>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </>
