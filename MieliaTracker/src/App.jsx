@@ -57,7 +57,14 @@ function App() {
                     <h2>Millainen mieliala sinulla on tänään?</h2>
                     <div className="moodBs">
                         {moodOptions.map((option) => (
-                            <button className="moodButton" key={option.value} type="button" style={{ backgroundColor: option.color }}
+                            <button
+                                className="moodButton"
+                                key={option.value}
+                                type="button"
+                                style={{
+                                    backgroundColor: option.color,
+                                    transform: mood === option.value ? 'scale(0.85)' : 'scale(1)'
+                                }}
                                 onClick={() => setMood(option.value)}
                             >
                                 {option.label}
@@ -68,7 +75,14 @@ function App() {
                     <h2>Kuinka monta tuntia nukuit viime yönä?</h2>
                     <div className="moodBs">
                         {sleepOptions.map((option) => (
-                            <button className="moodButton" key={option.value} type="button" style={{ backgroundColor: option.color }}
+                            <button
+                                className="moodButton"
+                                key={option.value}
+                                type="button"
+                                style={{
+                                    backgroundColor: option.color,
+                                    transform: sleep === option.value ? 'scale(0.85)' : 'scale(1)'
+                                }}
                                 onClick={() => setSleep(option.value)}
                             >
                                 {option.label}
