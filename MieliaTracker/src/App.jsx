@@ -25,8 +25,10 @@ function App() {
     const [sleep, setSleep] = useState(null)
 
     const handleSubmit = () => {
-        if (!date || mood === null && sleep === null) {
+        if (!date || mood === null || sleep === null) {
             alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
+            setMood(null)
+            setSleep(null)
             return
         }
 
