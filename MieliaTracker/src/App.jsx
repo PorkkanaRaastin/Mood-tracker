@@ -1,6 +1,7 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import entryService from './services/entries'
+
 //Mieliala napit ja arvot
 const moodOptions = [
     { value: 1, label: '1', color: '#e53935' },
@@ -9,6 +10,7 @@ const moodOptions = [
     { value: 4, label: '4', color: '#9ccc65' },
     { value: 5, label: '5', color: '#43a047', },
 ];
+
 //Unimäärä napit ja arvot
 const sleepOptions = [
     { value: '<5', label: '<5', color: '#e53935' },
@@ -18,6 +20,7 @@ const sleepOptions = [
     { value: '>8', label: '>8', color: '#43a047' },
 ]
 
+//Mielialanapit lomakkeeseen
 const MoodButtons = ({ moodOptions, mood, setMood }) => {
     return (
         <div className="moodBs">
@@ -39,6 +42,7 @@ const MoodButtons = ({ moodOptions, mood, setMood }) => {
     )
 }
 
+//uninapit lomakkeeseen
 const SleepButtons = ({ sleepOptions, sleep, setSleep }) => {
     return (
         <div className="moodBs">
@@ -60,9 +64,11 @@ const SleepButtons = ({ sleepOptions, sleep, setSleep }) => {
     )
 }
 
+//mielialan väri arvon perusteella
 const getMoodColor = (moodValue) =>
     moodOptions.find((option) => option.value === moodValue)?.color
 
+//lista kaikista merkinnöistä
 const EntriesList = ({ entries }) => {
     return (
         <div className="merkinnat">
@@ -92,6 +98,9 @@ function App() {
     const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [mood, setMood] = useState(null)
     const [sleep, setSleep] = useState(null)
+    //dark mode tila oletusarvo luetaan localStoragesta
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true')
+
     //haetaan kaikki merkinnät serveriltä kun sivu ladataan
     useEffect(() => {
         entryService
@@ -99,6 +108,13 @@ function App() {
             .then((data) => setEntries(data.sort((a, b) => new Date(b.date) - new Date(a.date))))
     }, [])
 
+    //vaihtaa teemaa ja tallentaa valinnan local storageen aina kun theme vaihtuu
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
+        localStorage.setItem('darkMode', darkMode) 
+    }, [darkMode])
+
+    //lomakkeen tarkistus sekä lähetys ja lomakkeen tyhjennys
     const handleSubmit = () => {
         if (!date || mood === null || sleep === null) {
             alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
@@ -122,6 +138,14 @@ function App() {
         <>
             <header>
                 <h3>Mieliala tracker</h3>
+                <label className="themeSwitch">
+                    <input 
+                        type="checkbox"
+                        checked={darkMode}
+                        onChange={() => setDarkMode(!darkMode)}
+                    />
+                    <span className="slider"></span>
+                </label>
             </header>
             <div className="moodBoksit">
                 <div className="valinnat">
