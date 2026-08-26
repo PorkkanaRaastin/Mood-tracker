@@ -1,19 +1,23 @@
 {
-    "entries": [
-        {
-            "date": "2026-06-01",
-            "mood": "3",
-            "id": "1"
-        },
-        {
-            "date": "2026-06-03",
-            "mood": "4",
-            "id": "2"
-        },
-        {
-            "date": "2026-06-22",
-            "mood": "5",
-            "id": "3"
-        }
-    ]
+  "entries": [
+    {
+      "date": "2026-08-26",
+      "mood": 2,
+      "sleep": "6-7",
+      "id": "1"
+    },
+    {
+      "date": "2026-08-26",
+      "mood": 4,
+      "sleep": "5-6",
+      "id": "zjgK79b3Vek"
+    },
+    {
+      "date": "2026-08-26",
+      "mood": 5,
+      "sleep": "<5",
+      "id": "JS76IJOtUoM"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

@@ -1,5 +1,6 @@
 import './App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import entryService from './services/entries'
 
 const moodOptions = [
     { value: 1, label: '1', color: '#e53935' },
@@ -24,23 +25,30 @@ function App() {
     const [mood, setMood] = useState(null)
     const [sleep, setSleep] = useState(null)
 
+    useEffect(() => {
+    entryService
+        .getAll()
+        .then((data) => setEntries(data.sort((a, b) => new Date(b.date) - new Date(a.date))))
+        }, [])
+
     const handleSubmit = () => {
-        if (!date || mood === null || sleep === null) {
-            alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
-            setMood(null)
-            setSleep(null)
-            return
-        }
-
-        const newEntry = { date, mood, sleep }
-
-        setEntries((prev) =>
-            [...prev, newEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
-        )
-
+    if (!date || mood === null || sleep === null) {
+        alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
         setMood(null)
         setSleep(null)
+        return
     }
+
+    const newEntry = { date, mood, sleep }
+
+    entryService.create(newEntry).then((savedEntry) => {
+        setEntries((prev) =>
+            [...prev, savedEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
+        )
+        setMood(null)
+        setSleep(null)
+    })
+}
 
     const getMoodColor = (moodValue) =>
         moodOptions.find((option) => option.value === moodValue)?.color
