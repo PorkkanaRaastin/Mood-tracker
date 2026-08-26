@@ -60,10 +60,11 @@ header {
     margin-top: 10px;
     button {
         border: none;
-        background-color: darkorchid;
+        background-color: rgb(126, 24, 177);
+        box-shadow: 3px 2px rgb(189, 141, 213);
         color: white;
         border-radius: 5px;
-        padding: 5px;
+        padding: 7px;
     }
 }
 
@@ -76,5 +77,16 @@ header {
 
 .merkintaPvm {
     margin-right: 15rem;
+}
+
+.chooseDate {
+    background: #ffffff;
+    border: 3px solid #bdb9b9;
+    box-shadow: 2px 2px #8d8a8a;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #2c2c2a;
+    font-size: 13px;
+    color-scheme: light;
 }
 

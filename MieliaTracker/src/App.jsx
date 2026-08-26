@@ -1,7 +1,7 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import entryService from './services/entries'
-
+//Mieliala napit ja arvot
 const moodOptions = [
     { value: 1, label: '1', color: '#e53935' },
     { value: 2, label: '2', color: '#fb8c00' },
@@ -9,7 +9,7 @@ const moodOptions = [
     { value: 4, label: '4', color: '#9ccc65' },
     { value: 5, label: '5', color: '#43a047', },
 ];
-
+//Unimäärä napit ja arvot
 const sleepOptions = [
     { value: '<5', label: '<5', color: '#e53935' },
     { value: '5-6', label: '5-6', color: '#fb8c00' },
@@ -19,18 +19,18 @@ const sleepOptions = [
 ]
 
 function App() {
-
+    //entries eli kaikki merkinnät serveriltä sekä mitä käyttäjä valitsee lomakkeessa
     const [entries, setEntries] = useState([])
     const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [mood, setMood] = useState(null)
     const [sleep, setSleep] = useState(null)
-
+    //haetaan kaikki merkinnät serveriltä kun sivu ladataan
     useEffect(() => {
     entryService
         .getAll()
         .then((data) => setEntries(data.sort((a, b) => new Date(b.date) - new Date(a.date))))
         }, [])
-
+        //lähetä napin toiminto sekä tyhjien valintojen tarkistus
     const handleSubmit = () => {
     if (!date || mood === null || sleep === null) {
         alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
@@ -38,9 +38,9 @@ function App() {
         setSleep(null)
         return
     }
-
+    //uusi merkintä serverille
     const newEntry = { date, mood, sleep }
-
+    //lähetä serverille ja palauta serveriltä
     entryService.create(newEntry).then((savedEntry) => {
         setEntries((prev) =>
             [...prev, savedEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -49,7 +49,7 @@ function App() {
         setSleep(null)
     })
 }
-
+    //mieliala väri sen arvon perusteella
     const getMoodColor = (moodValue) =>
         moodOptions.find((option) => option.value === moodValue)?.color
 
@@ -62,9 +62,11 @@ function App() {
                 <div className="valinnat">
                     <h2>Mille päivälle haluat lisätä merkinnän?</h2>
                     <p>Oletuksena merkintä lisätään tämän päivän päivämäärälle</p>
-                    <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                    {/* Päivämäärän valinta */}
+                    <input className="chooseDate" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
                     <h2>Millainen mieliala sinulla on tänään?</h2>
+                    {/* Mielialanapit */}
                     <div className="moodBs">
                         {moodOptions.map((option) => (
                             <button
@@ -83,6 +85,7 @@ function App() {
                     </div>
 
                     <h2>Kuinka monta tuntia nukuit viime yönä?</h2>
+                    {/* Uninapit*/}
                     <div className="moodBs">
                         {sleepOptions.map((option) => (
                             <button
@@ -106,6 +109,7 @@ function App() {
                 </div>
                 <div className="merkinnat">
                     <h2>Viimeisimmät merkinnät</h2>
+                    {/* Näytettävä teksti jos ei vielä merkintöjä*/}
                     {entries.length === 0 ? (
                         <p>Ei vielä merkintöjä.</p>
                     ) : (
