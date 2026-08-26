@@ -1,6 +1,7 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import entryService from './services/entries'
+import trashIcon from './assets/trash.svg'
 
 //Mieliala napit ja arvot
 const moodOptions = [
@@ -83,9 +84,13 @@ const EntriesList = ({ entries, removeEntry }) => {
                         style={{ backgroundColor: getMoodColor(entry.mood) }}
                     >
                         <span className="merkintaPvm">{entry.date}</span>
-                        <span className="merkintaTieto"> Mieliala: {entry.mood}</span>
-                        <span className="merkintaTieto"> Unen määrä: {entry.sleep} tuntia</span>
-                        <button className="removeButton" onClick={() => removeEntry(entry.id)} >poista</button>
+                        <div className="merkintaOikea">
+                            <span className="merkintaTieto">Mieliala: {entry.mood}</span>
+                            <span className="merkintaTieto">Unen määrä: {entry.sleep} tuntia</span>
+                            <button className="removeButton" onClick={() => removeEntry(entry.id)}>
+                                <img src={trashIcon} alt="poista" />
+                            </button>
+                        </div>
                     </div>
                 ))
             )}
