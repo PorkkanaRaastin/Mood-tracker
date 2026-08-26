@@ -1,16 +1,28 @@
 {
   "entries": [
     {
-      "date": "2026-08-26",
+      "date": "2026-07-29",
       "mood": 5,
-      "sleep": "6-7",
-      "id": "-x_3Hqrfa18"
+      "sleep": "7-8",
+      "id": "ljuJ7EQi_kc"
     },
     {
       "date": "2026-08-26",
-      "mood": 3,
+      "mood": 4,
       "sleep": "6-7",
-      "id": "oE9BXrP5Bv0"
+      "id": "W0mWQuwvPMc"
+    },
+    {
+      "date": "2026-07-28",
+      "mood": 1,
+      "sleep": "<5",
+      "id": "flMsjyn2hPU"
+    },
+    {
+      "date": "2026-07-18",
+      "mood": 5,
+      "sleep": ">8",
+      "id": "GdGc7ETtGyE"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

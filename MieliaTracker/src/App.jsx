@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import entryService from './services/entries'
 import trashIcon from './assets/trash.svg'
 
-//Mieliala napit ja arvot
+//Mieliala arvot
 const moodOptions = [
     { value: 1, label: '1', color: '#e53935' },
     { value: 2, label: '2', color: '#fb8c00' },
@@ -12,7 +12,7 @@ const moodOptions = [
     { value: 5, label: '5', color: '#43a047', },
 ];
 
-//Unimäärä napit ja arvot
+//Unimäärä arvot
 const sleepOptions = [
     { value: '<5', label: '<5', color: '#e53935' },
     { value: '5-6', label: '5-6', color: '#fb8c00' },
@@ -21,7 +21,8 @@ const sleepOptions = [
     { value: '>8', label: '>8', color: '#43a047' },
 ]
 
-//Mielialanapit lomakkeeseen
+//Mielialanapit lomakkeeseen: näyttää yhden napin per moodOptions-arvo,
+//korostaa (pienentää) sen napin joka on valittuna
 const MoodButtons = ({ moodOptions, mood, setMood }) => {
     return (
         <div className="moodBs">
@@ -43,7 +44,8 @@ const MoodButtons = ({ moodOptions, mood, setMood }) => {
     )
 }
 
-//uninapit lomakkeeseen
+//Uninapit lomakkeeseen: sama periaate kuin MoodButtons-komponentissa,
+//mutta unimäärävaihtoehdoille
 const SleepButtons = ({ sleepOptions, sleep, setSleep }) => {
     return (
         <div className="moodBs">
@@ -65,11 +67,13 @@ const SleepButtons = ({ sleepOptions, sleep, setSleep }) => {
     )
 }
 
-//mielialan väri arvon perusteella
+//Palauttaa mielialaa vastaavan värin moodOptions-listasta,
+//käytetään merkintälistan taustavärinä
 const getMoodColor = (moodValue) =>
     moodOptions.find((option) => option.value === moodValue)?.color
 
-//lista kaikista merkinnöistä
+//Lista kaikista merkinnöistä: näyttää päivämäärän, mielialan ja unimäärän
+//jokaiselle merkinnälle sekä poistonapin
 const EntriesList = ({ entries, removeEntry }) => {
     return (
         <div className="merkinnat">
@@ -99,29 +103,35 @@ const EntriesList = ({ entries, removeEntry }) => {
 }
 
 function App() {
-    //entries eli kaikki merkinnät serveriltä sekä mitä käyttäjä valitsee lomakkeessa
+    //entries: kaikki merkinnät serveriltä
     const [entries, setEntries] = useState([])
+    //date, mood, sleep: lomakkeen tämänhetkiset valinnat
     const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [mood, setMood] = useState(null)
     const [sleep, setSleep] = useState(null)
-    //dark mode tila oletusarvo luetaan localStoragesta
+    //dark mode -tila, oletusarvo luetaan localStoragesta
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true')
 
-    //haetaan kaikki merkinnät serveriltä kun sivu ladataan
+    //Haetaan kaikki merkinnät serveriltä kun sivu ladataan,
+    //ja järjestetään ne päivämäärän mukaan uusimmasta vanhimpaan
     useEffect(() => {
         entryService
             .getAll()
             .then((data) => setEntries(data.sort((a, b) => new Date(b.date) - new Date(a.date))))
     }, [])
 
-    //vaihtaa teemaa ja tallentaa valinnan local storageen aina kun theme vaihtuu
+    //Vaihtaa teemaa (light/dark) ja tallentaa valinnan local storageen
+    //aina kun darkMode-tila muuttuu
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
         localStorage.setItem('darkMode', darkMode)
     }, [darkMode])
 
-    //lomakkeen tarkistus sekä lähetys ja lomakkeen tyhjennys
+    //Lomakkeen tarkistus, lähetys ja tyhjennys.
+    //Jos valitulle päivälle on jo olemassa merkintä, kysytään käyttäjältä
+    //haluaako hän päivittää sen; muuten luodaan uusi merkintä.
     const handleSubmit = () => {
+        //Varmistetaan että kaikki kentät on täytetty ennen lähetystä
         if (!date || mood === null || sleep === null) {
             alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
             setMood(null)
@@ -130,7 +140,26 @@ function App() {
         }
 
         const newEntry = { date, mood, sleep }
+        //Tarkistetaan löytyykö valitulle päivämäärälle jo merkintä
+        const entryExists = entries.find(entry => entry.date === date)
 
+        if (entryExists) {
+            //Merkintä löytyi -> kysytään vahvistus ja päivitetään olemassa oleva merkintä.
+            if (window.confirm(`${date} on jo merkattu. Haluatko muokata merkkausta?`)) {
+                entryService.update(entryExists.id, newEntry).then((updatedEntry) => {
+                    setEntries(entries.map((entry) =>
+                        entry.id === updatedEntry.id ? updatedEntry : entry
+                    ))
+                })
+            }
+            setMood(null)
+            setSleep(null)
+            //return estää sen, että koodi jatkaisi alla olevaan create-kutsuun
+            //ja loisi vahingossa duplikaattimerkinnän
+            return
+        }
+
+        //Merkintää ei löytynyt -> luodaan uusi merkintä palvelimelle
         entryService.create(newEntry).then((savedEntry) => {
             setEntries((prev) =>
                 [...prev, savedEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -140,8 +169,8 @@ function App() {
         })
     }
 
+    //Poistaa merkinnän palvelimelta vahvistuksen jälkeen ja päivittää tilan
     const removeEntry = (id) => {
-
         if (window.confirm('Poistetaanko merkintä?')) {
             entryService.remove(id).then(() => {
                 setEntries(entries.filter(entry => entry.id !== id))
@@ -153,6 +182,7 @@ function App() {
         <>
             <header>
                 <h3>Mieliala tracker</h3>
+                {/* Dark mode -kytkin */}
                 <label className="themeSwitch">
                     <input
                         type="checkbox"
@@ -180,7 +210,7 @@ function App() {
                     </div>
 
                 </div>
-                <EntriesList entries={entries} removeEntry={removeEntry}/>
+                <EntriesList entries={entries} removeEntry={removeEntry} />
             </div>
         </>
     )
