@@ -102,6 +102,7 @@ header {
     border-radius: 5px;
     color: white;
     box-shadow: 3px 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
 }
 
 .submit {
@@ -115,6 +116,7 @@ header {
         color: white;
         border-radius: 5px;
         padding: 7px;
+        cursor: pointer;
     }
 }
 
@@ -143,6 +145,7 @@ header {
     color: var(--text);
     font-size: 13px;
     color-scheme: var(--color-scheme);
+    cursor: pointer;
 }
 
 .themeSwitch {

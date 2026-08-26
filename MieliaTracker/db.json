@@ -2,33 +2,15 @@
   "entries": [
     {
       "date": "2026-08-26",
-      "mood": 2,
+      "mood": 5,
       "sleep": "6-7",
-      "id": "1"
+      "id": "-x_3Hqrfa18"
     },
     {
       "date": "2026-08-26",
-      "mood": 4,
-      "sleep": "5-6",
-      "id": "mstZsA171Nk"
-    },
-    {
-      "date": "2026-07-29",
       "mood": 3,
-      "sleep": "<5",
-      "id": "ljuJ7EQi_kc"
-    },
-    {
-      "date": "2026-08-26",
-      "mood": 1,
-      "sleep": "<5",
-      "id": "wL1-ii7qV0U"
-    },
-    {
-      "date": "2026-08-26",
-      "mood": 2,
-      "sleep": "5-6",
-      "id": "Ah0f7GaDIKo"
+      "sleep": "6-7",
+      "id": "oE9BXrP5Bv0"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
