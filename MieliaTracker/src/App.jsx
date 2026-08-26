@@ -18,6 +18,74 @@ const sleepOptions = [
     { value: '>8', label: '>8', color: '#43a047' },
 ]
 
+const MoodButtons = ({ moodOptions, mood, setMood }) => {
+    return (
+        <div className="moodBs">
+            {moodOptions.map((option) => (
+                <button
+                    className="moodButton"
+                    key={option.value}
+                    type="button"
+                    style={{
+                        backgroundColor: option.color,
+                        transform: mood === option.value ? 'scale(0.85)' : 'scale(1)'
+                    }}
+                    onClick={() => setMood(option.value)}
+                >
+                    {option.label}
+                </button>
+            ))}
+        </div>
+    )
+}
+
+const SleepButtons = ({ sleepOptions, sleep, setSleep }) => {
+    return (
+        <div className="moodBs">
+            {sleepOptions.map((option) => (
+                <button
+                    className="moodButton"
+                    key={option.value}
+                    type="button"
+                    style={{
+                        backgroundColor: option.color,
+                        transform: sleep === option.value ? 'scale(0.85)' : 'scale(1)'
+                    }}
+                    onClick={() => setSleep(option.value)}
+                >
+                    {option.label}
+                </button>
+            ))}
+        </div>
+    )
+}
+
+const getMoodColor = (moodValue) =>
+    moodOptions.find((option) => option.value === moodValue)?.color
+
+const EntriesList = ({ entries }) => {
+    return (
+        <div className="merkinnat">
+            <h2>Viimeisimmät merkinnät</h2>
+            {entries.length === 0 ? (
+                <p>Ei vielä merkintöjä.</p>
+            ) : (
+                entries.map((entry, index) => (
+                    <div
+                        key={index}
+                        className="merkintaRivi"
+                        style={{ backgroundColor: getMoodColor(entry.mood) }}
+                    >
+                        <span className="merkintaPvm">{entry.date}</span>
+                        <span className="merkintaTieto"> Mieliala: {entry.mood}</span>
+                        <span className="merkintaTieto"> Unen määrä: {entry.sleep} tuntia</span>
+                    </div>
+                ))
+            )}
+        </div>
+    )
+}
+
 function App() {
 
     const [entries, setEntries] = useState([])
@@ -26,32 +94,29 @@ function App() {
     const [sleep, setSleep] = useState(null)
 
     useEffect(() => {
-    entryService
-        .getAll()
-        .then((data) => setEntries(data.sort((a, b) => new Date(b.date) - new Date(a.date))))
-        }, [])
+        entryService
+            .getAll()
+            .then((data) => setEntries(data.sort((a, b) => new Date(b.date) - new Date(a.date))))
+    }, [])
 
     const handleSubmit = () => {
-    if (!date || mood === null || sleep === null) {
-        alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
-        setMood(null)
-        setSleep(null)
-        return
+        if (!date || mood === null || sleep === null) {
+            alert('Valitse päivämäärä, mieliala ja unen määrä ennen lähettämistä.')
+            setMood(null)
+            setSleep(null)
+            return
+        }
+
+        const newEntry = { date, mood, sleep }
+
+        entryService.create(newEntry).then((savedEntry) => {
+            setEntries((prev) =>
+                [...prev, savedEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
+            )
+            setMood(null)
+            setSleep(null)
+        })
     }
-
-    const newEntry = { date, mood, sleep }
-
-    entryService.create(newEntry).then((savedEntry) => {
-        setEntries((prev) =>
-            [...prev, savedEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
-        )
-        setMood(null)
-        setSleep(null)
-    })
-}
-
-    const getMoodColor = (moodValue) =>
-        moodOptions.find((option) => option.value === moodValue)?.color
 
     return (
         <>
@@ -65,63 +130,17 @@ function App() {
                     <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
 
                     <h2>Millainen mieliala sinulla on tänään?</h2>
-                    <div className="moodBs">
-                        {moodOptions.map((option) => (
-                            <button
-                                className="moodButton"
-                                key={option.value}
-                                type="button"
-                                style={{
-                                    backgroundColor: option.color,
-                                    transform: mood === option.value ? 'scale(0.85)' : 'scale(1)'
-                                }}
-                                onClick={() => setMood(option.value)}
-                            >
-                                {option.label}
-                            </button>
-                        ))}
-                    </div>
+                    <MoodButtons moodOptions={moodOptions} mood={mood} setMood={setMood} />
 
                     <h2>Kuinka monta tuntia nukuit viime yönä?</h2>
-                    <div className="moodBs">
-                        {sleepOptions.map((option) => (
-                            <button
-                                className="moodButton"
-                                key={option.value}
-                                type="button"
-                                style={{
-                                    backgroundColor: option.color,
-                                    transform: sleep === option.value ? 'scale(0.85)' : 'scale(1)'
-                                }}
-                                onClick={() => setSleep(option.value)}
-                            >
-                                {option.label}
-                            </button>
-                        ))}
-                    </div>
+                    <SleepButtons sleepOptions={sleepOptions} sleep={sleep} setSleep={setSleep} />
+
                     <div className='submit'>
                         <button onClick={handleSubmit}>Lähetä</button>
                     </div>
 
                 </div>
-                <div className="merkinnat">
-                    <h2>Viimeisimmät merkinnät</h2>
-                    {entries.length === 0 ? (
-                        <p>Ei vielä merkintöjä.</p>
-                    ) : (
-                        entries.map((entry, index) => (
-                            <div
-                                key={index}
-                                className="merkintaRivi"
-                                style={{ backgroundColor: getMoodColor(entry.mood) }}
-                            >
-                                <span className="merkintaPvm">{entry.date}</span>
-                                <span className="merkintaTieto"> Mieliala: {entry.mood}</span>
-                                <span className="merkintaTieto"> Unen määrä: {entry.sleep} tuntia</span>
-                            </div>
-                        ))
-                    )}
-                </div>
+                    <EntriesList entries={entries} />
             </div>
         </>
     )
