@@ -117,20 +117,6 @@ function App() {
             setSleep(null)
         })
     }
-    //uusi merkintä serverille
-    const newEntry = { date, mood, sleep }
-    //lähetä serverille ja palauta serveriltä
-    entryService.create(newEntry).then((savedEntry) => {
-        setEntries((prev) =>
-            [...prev, savedEntry].sort((a, b) => new Date(b.date) - new Date(a.date))
-        )
-        setMood(null)
-        setSleep(null)
-    })
-}
-    //mieliala väri sen arvon perusteella
-    const getMoodColor = (moodValue) =>
-        moodOptions.find((option) => option.value === moodValue)?.color
 
     return (
         <>
