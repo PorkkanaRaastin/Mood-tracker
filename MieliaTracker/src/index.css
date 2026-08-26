@@ -81,10 +81,10 @@ header {
 .moodButton {
     border: none;
     height: 50px;
-    width: 50px;
+    width: 70px;
     border-radius: 5px;
     color: white;
-
+    box-shadow: 3px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .submit {
