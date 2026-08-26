@@ -69,7 +69,7 @@ const getMoodColor = (moodValue) =>
     moodOptions.find((option) => option.value === moodValue)?.color
 
 //lista kaikista merkinnöistä
-const EntriesList = ({ entries }) => {
+const EntriesList = ({ entries, removeEntry }) => {
     return (
         <div className="merkinnat">
             <h2>Viimeisimmät merkinnät</h2>
@@ -85,6 +85,7 @@ const EntriesList = ({ entries }) => {
                         <span className="merkintaPvm">{entry.date}</span>
                         <span className="merkintaTieto"> Mieliala: {entry.mood}</span>
                         <span className="merkintaTieto"> Unen määrä: {entry.sleep} tuntia</span>
+                        <button className="removeButton" onClick={() => removeEntry(entry.id)} >poista</button>
                     </div>
                 ))
             )}
@@ -111,7 +112,7 @@ function App() {
     //vaihtaa teemaa ja tallentaa valinnan local storageen aina kun theme vaihtuu
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
-        localStorage.setItem('darkMode', darkMode) 
+        localStorage.setItem('darkMode', darkMode)
     }, [darkMode])
 
     //lomakkeen tarkistus sekä lähetys ja lomakkeen tyhjennys
@@ -134,12 +135,21 @@ function App() {
         })
     }
 
+    const removeEntry = (id) => {
+
+        if (window.confirm('Poistetaanko merkintä?')) {
+            entryService.remove(id).then(() => {
+                setEntries(entries.filter(entry => entry.id !== id))
+            })
+        }
+    }
+
     return (
         <>
             <header>
                 <h3>Mieliala tracker</h3>
                 <label className="themeSwitch">
-                    <input 
+                    <input
                         type="checkbox"
                         checked={darkMode}
                         onChange={() => setDarkMode(!darkMode)}
@@ -165,7 +175,7 @@ function App() {
                     </div>
 
                 </div>
-                    <EntriesList entries={entries} />
+                <EntriesList entries={entries} removeEntry={removeEntry}/>
             </div>
         </>
     )

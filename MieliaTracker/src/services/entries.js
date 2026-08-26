@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 const baseUrl = 'http://localhost:3001/entries'
 
 const getAll = () => {
@@ -10,7 +9,7 @@ const create = (newEntry) => {
     return axios.post(baseUrl, newEntry).then(response => response.data)
 }
 
-const remove = id => {
+const remove = (id) => {
     return axios.delete(`${baseUrl}/${id}`)
 }
 
