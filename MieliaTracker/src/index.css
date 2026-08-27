@@ -1,7 +1,7 @@
 :root {
     --bg: #dae5f0;
-    --header-bg: rgb(45, 42, 42);
-    --header-text: white;
+    --header-bg: rgb(253, 253, 253);
+    --header-text: rgb(1, 0, 0);
     --card-bg: white;
     --text: #2c2c2a;
     --shadow: rgb(199, 195, 195);
@@ -63,7 +63,6 @@ header {
     justify-content: center;
     margin-top: 20px;
     gap: 10px;
-    height: 450px;
 }
 
 .valinnat {
@@ -72,7 +71,6 @@ header {
     padding: 15px;
     border-radius: 10px;
     box-shadow: 5px 5px var(--shadow);
-
     h2 {
         text-align: center;
     }
@@ -87,6 +85,11 @@ header {
     overflow-y: scroll;
     height: 420px;
     box-shadow: 5px 5px var(--shadow);
+    min-height: 450px;
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--input-border) transparent;
 }
 
 .moodBs {
@@ -191,4 +194,23 @@ header {
 
 .themeSwitch input:checked + .slider::before {
     transform: translateX(20px);
+}
+
+/*responsive jutut*/
+
+@media (max-width: 1200px) {
+    .moodBoksit {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .valinnat {
+        margin-top: 10px;
+    }
+
+    .merkinnat {
+        width: 90%;
+        max-width: 30rem;
+        margin-top: 10px;
+    }
 }

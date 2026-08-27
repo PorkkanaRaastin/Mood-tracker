@@ -8,7 +8,7 @@
     },
     {
       "date": "2026-08-26",
-      "mood": 4,
+      "mood": 3,
       "sleep": "6-7",
       "id": "W0mWQuwvPMc"
     },
@@ -23,6 +23,18 @@
       "mood": 5,
       "sleep": ">8",
       "id": "GdGc7ETtGyE"
+    },
+    {
+      "date": "2026-08-27",
+      "mood": 4,
+      "sleep": "6-7",
+      "id": "JbKw6bXelBk"
+    },
+    {
+      "date": "2026-08-13",
+      "mood": 2,
+      "sleep": "7-8",
+      "id": "pbgbZzykGh0"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
