@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 import entryService from '../services/entries'
 import trashIcon from '../assets/trash.svg'
+import darkIcon from '../assets/dark_mode.svg'
+import lightIcon from '../assets/light_mode.svg'
 
 //Mieliala arvot
 const moodOptions = [
@@ -181,6 +183,11 @@ function MielialaTracker() {
             <StyledHeader>
                 <Link to="/"><button>Etusivu</button></Link>
                 <h3>Mieliala tracker</h3>
+                <img
+                    src={darkMode ? darkIcon : lightIcon}
+                    alt={darkMode ? 'dark mode' : 'light mode'}
+                    style={!darkMode ? { filter: 'brightness(0.5)' } : undefined}
+                />
                 {/* Dark mode -kytkin */}
                 <ThemeSwitch>
                     <input
@@ -227,6 +234,16 @@ const StyledHeader = styled.header`
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+
+    img {
+        margin-left: auto;
+        margin-right: 10px;
+    }
+
+    h3 {
+        margin-left: auto;
+    }
+
     a {
         text-decoration: none;
         color: var(--a);

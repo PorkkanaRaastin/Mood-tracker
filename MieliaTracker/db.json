@@ -1,34 +1,10 @@
 {
   "entries": [
     {
-      "date": "2026-07-29",
-      "mood": 5,
-      "sleep": "7-8",
-      "id": "ljuJ7EQi_kc"
-    },
-    {
-      "date": "2026-08-26",
-      "mood": 3,
-      "sleep": "6-7",
-      "id": "W0mWQuwvPMc"
-    },
-    {
-      "date": "2026-07-28",
-      "mood": 1,
-      "sleep": "<5",
-      "id": "flMsjyn2hPU"
-    },
-    {
       "date": "2026-07-18",
       "mood": 5,
       "sleep": ">8",
       "id": "GdGc7ETtGyE"
-    },
-    {
-      "date": "2026-08-27",
-      "mood": 4,
-      "sleep": "6-7",
-      "id": "JbKw6bXelBk"
     },
     {
       "date": "2026-08-13",
