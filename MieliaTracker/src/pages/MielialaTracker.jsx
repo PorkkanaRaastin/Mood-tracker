@@ -73,6 +73,9 @@ const SleepButtons = ({ sleepOptions, sleep, setSleep }) => {
 const getMoodColor = (moodValue) =>
     moodOptions.find((option) => option.value === moodValue)?.color
 
+const getSleepColor = (sleepValue) =>
+    sleepOptions.find((option) => option.value === sleepValue)?.color
+
 //Lista kaikista merkinnöistä: näyttää päivämäärän, mielialan ja unimäärän
 //jokaiselle merkinnälle sekä poistonapin
 const EntriesList = ({ entries, removeEntry }) => {
@@ -85,7 +88,7 @@ const EntriesList = ({ entries, removeEntry }) => {
                 entries.map((entry, index) => (
                     <MerkintaRivi
                         key={index}
-                        style={{ backgroundColor: getMoodColor(entry.mood) }}
+                        style={{ background: `linear-gradient(to right, ${getMoodColor(entry.mood)} 45%, ${getSleepColor(entry.sleep)})` }}
                     >
                         <span>{entry.date}</span>
                         <MerkintaOikea>
@@ -203,7 +206,7 @@ function MielialaTracker() {
                     <h2>Mille päivälle haluat lisätä merkinnän?</h2>
                     <p>Oletuksena merkintä lisätään tämän päivän päivämäärälle</p>
                     {/* Päivämäärän valinta */}
-                    <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                    <ChooseDate type="date" value={date} onChange={(event) => setDate(event.target.value)} />
 
                     <h2>Millainen mieliala sinulla on tänään?</h2>
                     <MoodButtons moodOptions={moodOptions} mood={mood} setMood={setMood} />

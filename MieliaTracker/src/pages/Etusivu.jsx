@@ -20,6 +20,7 @@ function Etusivu() {
     <div className="etusivu">
       <StyledHeader>
         <h2>Tervetuloa</h2>
+        {/* Näytetään aurinko/kuu-ikoni sen mukaan, kumpi teema on käytössä */}
         <img 
         src={darkMode ? darkIcon : lightIcon} 
         alt={darkMode ? 'dark mode' : 'light mode'}
