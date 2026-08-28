@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
-import entryService from '../services/entries'
 import trashIcon from '../assets/trash.svg'
 import darkIcon from '../assets/dark_mode.svg'
 import lightIcon from '../assets/light_mode.svg'
@@ -34,17 +33,17 @@ const EntriesList = ({ entries, removeEntry }) => {
 }
 
 function Paivakirja() {
-  //dark teema
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true')
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
-  const [entries, setEntries] = useState([])
+    //dark teema
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true')
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+    const [entries, setEntries] = useState([])
 
-  useEffect(() => {
+    useEffect(() => {
         document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
         localStorage.setItem('darkMode', darkMode)
     }, [darkMode])
 
-       const removeEntry = (id) => {
+    const removeEntry = (id) => {
         if (window.confirm('Poistetaanko merkintä?')) {
             entryService.remove(id).then(() => {
                 setEntries(entries.filter(entry => entry.id !== id))
@@ -52,12 +51,17 @@ function Paivakirja() {
         }
     }
 
-  return (
-    <>
-      <StyledHeader>
+    return (
+        <>
+            <StyledHeader>
                 <Link to="/"><button>Etusivu</button></Link>
                 <h3>Päiväkirja</h3>
                 {/* Dark mode -kytkin */}
+                <img
+                    src={darkMode ? darkIcon : lightIcon}
+                    alt={darkMode ? 'dark mode' : 'light mode'}
+                    style={!darkMode ? { filter: 'brightness(0.5)' } : undefined}
+                />
                 <ThemeSwitch>
                     <input
                         type="checkbox"
@@ -68,15 +72,15 @@ function Paivakirja() {
                 </ThemeSwitch>
             </StyledHeader>
             <MoodBoksit>
-              <Valinnat>
-                <h2>Mille päivälle haluat lisätä merkinnän?</h2>
-                <p>Oletuksena merkintä lisätään tälle päivämäärälle</p>
-                <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-              </Valinnat>
-              <EntriesList entries={entries} removeEntry={removeEntry} />
+                <Valinnat>
+                    <h2>Mille päivälle haluat lisätä merkinnän?</h2>
+                    <p>Oletuksena merkintä lisätään tälle päivämäärälle</p>
+                    <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                </Valinnat>
+                <EntriesList entries={entries} removeEntry={removeEntry} />
             </MoodBoksit>
-    </>
-  )
+        </>
+    )
 }
 
 const StyledHeader = styled.header`
@@ -91,6 +95,16 @@ const StyledHeader = styled.header`
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+
+    img {
+        margin-left: auto;
+        margin-right: 10px;
+    }
+
+    h3 {
+        margin-left: auto;
+    }
+
     a {
         text-decoration: none;
         color: var(--a);
