@@ -76,12 +76,30 @@ function Paivakirja() {
                     <h2>Mille päivälle haluat lisätä merkinnän?</h2>
                     <p>Oletuksena merkintä lisätään tälle päivämäärälle</p>
                     <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                      <h2>Kirjoita päivän mietteet</h2>
+                      <PaivakirjaText>
+                        <input placeholder="Kirjoita päivän mietteet..." type="text" name="" id="" />
+                      </PaivakirjaText>
                 </Valinnat>
                 <EntriesList entries={entries} removeEntry={removeEntry} />
             </MoodBoksit>
         </>
     )
 }
+
+const PaivakirjaText = styled.div`
+  display: flex;
+  justify-content: center;
+
+  input {
+    margin-top: 20px;
+    height: 50px;
+    width: 300px;
+    border: 3px solid #bdb9b9;
+    border-radius: 6px;
+    box-shadow: 2px 2px #8d8a8a
+  }
+`
 
 const StyledHeader = styled.header`
     background-color: var(--header-bg);
