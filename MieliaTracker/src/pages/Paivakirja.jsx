@@ -1,3 +1,4 @@
+import entryService from '../services/paivakirjaService'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
@@ -8,6 +9,40 @@ import goodIcon from '../assets/good.svg';
 import neutralIcon from '../assets/neutral.svg';
 import badIcon from '../assets/bad.svg';
 
+const getMoodIcon = (mood) => {
+    if (mood === 'good') return goodIcon
+    if (mood === 'neutral') return neutralIcon
+    if (mood === 'bad') return badIcon
+    return null
+}
+
+const EntryRow = ({ entry, removeEntry }) => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <MerkintaRivi>
+            <MerkintaYlarivi>
+                <span>{entry.date}</span>
+                <img
+                    src={getMoodIcon(entry.mood)}
+                    alt={entry.mood}
+                    style={{ width: '24px', height: '24px' }}
+                />
+                <ToggleButton onClick={() => setOpen(!open)}>
+                    {open ? 'Sulje' : 'Näytä lisää'}
+                </ToggleButton>
+                <RemoveButton onClick={() => removeEntry(entry.id)}>
+                    <img src={trashIcon} alt="poista" />
+                </RemoveButton>
+            </MerkintaYlarivi>
+
+            {open && (
+                <EntryTeksti>{entry.text}</EntryTeksti>
+            )}
+        </MerkintaRivi>
+    )
+}
+
 const EntriesList = ({ entries, removeEntry }) => {
     return (
         <Merkinnat>
@@ -15,20 +50,8 @@ const EntriesList = ({ entries, removeEntry }) => {
             {entries.length === 0 ? (
                 <p>Ei vielä merkintöjä.</p>
             ) : (
-                entries.map((entry, index) => (
-                    <MerkintaRivi
-                        key={index}
-                        style={{ backgroundColor: getMoodColor(entry.mood) }}
-                    >
-                        <span>{entry.date}</span>
-                        <MerkintaOikea>
-                            <span>Mieliala: {entry.mood}</span>
-                            <span>Unen määrä: {entry.sleep} tuntia</span>
-                            <RemoveButton onClick={() => removeEntry(entry.id)}>
-                                <img src={trashIcon} alt="poista" />
-                            </RemoveButton>
-                        </MerkintaOikea>
-                    </MerkintaRivi>
+                entries.map((entry) => (
+                    <EntryRow key={entry.id} entry={entry} removeEntry={removeEntry} />
                 ))
             )}
         </Merkinnat>
@@ -40,6 +63,12 @@ function Paivakirja() {
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true')
     const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [entries, setEntries] = useState([])
+    const [text, setText] = useState('')
+    const [mood, setMood] = useState(null)
+
+    useEffect(() => {
+    entryService.getAll().then(data => setEntries(data))
+    }, [])
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
@@ -47,12 +76,31 @@ function Paivakirja() {
     }, [darkMode])
 
     const removeEntry = (id) => {
-        if (window.confirm('Poistetaanko merkintä?')) {
-            entryService.remove(id).then(() => {
-                setEntries(entries.filter(entry => entry.id !== id))
-            })
-        }
+    if (window.confirm('Poistetaanko merkintä?')) {
+        entryService.remove(id).then(() => {
+            setEntries(entries.filter(entry => entry.id !== id))
+        })
     }
+}
+
+    const handleSubmit = () => {
+    if (!text.trim() || !mood) {
+        alert('Kirjoita mietteet ja valitse mieliala ennen lähettämistä.')
+        return
+    }
+
+    const newEntry = {
+        date: date,
+        text: text,
+        mood: mood
+    }
+
+    entryService.create(newEntry).then(savedEntry => {
+        setEntries([savedEntry, ...entries])
+        setText('')
+        setMood(null)
+    })
+}
 
     return (
         <>
@@ -81,23 +129,24 @@ function Paivakirja() {
                     <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                       <h2>Kirjoita päivän mietteet</h2>
                       <PaivakirjaText>
-                        <textarea placeholder="Kirjoita päivän mietteet..." type="text" name="" id="" />
+                        <textarea 
+                        placeholder="Kirjoita päivän mietteet..."
+                        value={text}
+                        onChange={(event) => setText(event.target.value)}/>
                       </PaivakirjaText>
                       <PaivakirjaMoods>
-                        <PaivakirjaMoods>
-                          <button type="button">
-                            <img src={goodIcon} alt="Hyvä" />
-                          </button>
-                          <button type="button">
-                            <img src={neutralIcon} alt="Neutraali" />
-                          </button>
-                          <button type="button">
-                            <img src={badIcon} alt="Huono" />
-                          </button>
-                        </PaivakirjaMoods>
+                        <button type="button" onClick={() => setMood('good')}>
+                          <img src={goodIcon} alt="Hyvä" />
+                        </button>
+                        <button type="button" onClick={() => setMood('neutral')}>
+                          <img src={neutralIcon} alt="Neutraali" />
+                        </button>
+                        <button type="button" onClick={() => setMood('bad')}>
+                          <img src={badIcon} alt="Huono" />
+                        </button>
                       </PaivakirjaMoods>
                       <Submit>
-                        <button>Lähetä</button>
+                        <button onClick={handleSubmit}>Lähetä</button>
                       </Submit>
                 </Valinnat>
                 <EntriesList entries={entries} removeEntry={removeEntry} />
@@ -123,6 +172,57 @@ const PaivakirjaMoods = styled.div`
     width: 40px;
     height: 40px;
   }
+`
+
+const MerkintaRivi = styled.div`
+    color: var(--text);
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 1px solid var(--input-border);
+`
+
+const MerkintaYlarivi = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+`
+
+const EntryTeksti = styled.p`
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-left: 5px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+`
+
+const ToggleButton = styled.button`
+    background: none;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 12px;
+`
+
+const MerkintaOikea = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+`
+
+const RemoveButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
 `
 
 const PaivakirjaText = styled.div`
@@ -220,15 +320,6 @@ const Valinnat = styled.div`
     }
 `
 
-const MerkintaRivi = styled.div`
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`
 
 const ThemeSwitch = styled.label`
     position: relative;

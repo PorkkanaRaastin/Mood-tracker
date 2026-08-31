@@ -19,5 +19,25 @@
       "id": "S1ozKhGJrb8"
     }
   ],
+  "paivakirjaEntries": [
+    {
+      "date": "2026-08-31",
+      "text": "Maanantai. EI kivaa. Väsyttää ja pitäis koodaa. Sukka on märkä ja on nälkä. Kotiin ois kiva päästä mutta ehkä puol kolme pääsee...",
+      "mood": "neutral",
+      "id": "GKxO1kqCdSQ"
+    },
+    {
+      "date": "2026-08-29",
+      "text": "Ihan jees fiilikset. Elämä hymyilee koska VIIKONLOPPU!!",
+      "mood": "good",
+      "id": "l_ge95dyQWo"
+    },
+    {
+      "date": "2026-08-31",
+      "text": "Ei jaksa",
+      "mood": "bad",
+      "id": "PPxSGx4NJl4"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
