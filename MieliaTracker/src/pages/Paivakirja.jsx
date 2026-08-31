@@ -20,21 +20,25 @@ const EntryRow = ({ entry, removeEntry }) => {
     const [open, setOpen] = useState(false)
 
     return (
-        <MerkintaRivi>
-            <MerkintaYlarivi>
-                <span>{entry.date}</span>
-                <img
-                    src={getMoodIcon(entry.mood)}
-                    alt={entry.mood}
-                    style={{ width: '24px', height: '24px' }}
-                />
-                <ToggleButton onClick={() => setOpen(!open)}>
-                    {open ? 'Sulje' : 'Näytä lisää'}
-                </ToggleButton>
-                <RemoveButton onClick={() => removeEntry(entry.id)}>
-                    <img src={trashIcon} alt="poista" />
-                </RemoveButton>
-            </MerkintaYlarivi>
+          <MerkintaRivi>
+              <MerkintaYlarivi>
+              <VasenRyhma>
+                  <span>{entry.date}</span>
+                  <img
+                      src={getMoodIcon(entry.mood)}
+                      alt={entry.mood}
+                      style={{ width: '24px', height: '24px' }}
+                  />
+              </VasenRyhma>
+              <OikeaRyhma>
+                  <ToggleButton onClick={() => setOpen(!open)}>
+                      {open ? 'Sulje' : 'Näytä lisää'}
+                  </ToggleButton>
+                  <RemoveButton onClick={() => removeEntry(entry.id)}>
+                      <img src={trashIcon} alt="poista" />
+                  </RemoveButton>
+              </OikeaRyhma>
+          </MerkintaYlarivi>
 
             {open && (
                 <EntryTeksti>{entry.text}</EntryTeksti>
@@ -83,23 +87,49 @@ function Paivakirja() {
     }
 }
 
-    const handleSubmit = () => {
+const handleSubmit = () => {
     if (!text.trim() || !mood) {
         alert('Kirjoita mietteet ja valitse mieliala ennen lähettämistä.')
         return
     }
 
-    const newEntry = {
-        date: date,
-        text: text,
-        mood: mood
-    }
+    const existingEntry = entries.find(entry => entry.date === date)
 
-    entryService.create(newEntry).then(savedEntry => {
-        setEntries([savedEntry, ...entries])
-        setText('')
-        setMood(null)
-    })
+    if (existingEntry) {
+        const confirmUpdate = window.confirm(
+            `Tälle päivälle (${date}) on jo merkintä. Haluatko päivittää sen?`
+        )
+
+        if (!confirmUpdate) {
+            return
+        }
+
+        const updatedEntry = {
+            ...existingEntry,
+            text: text,
+            mood: mood
+        }
+
+        entryService.update(existingEntry.id, updatedEntry).then(returnedEntry => {
+            setEntries(entries.map(entry =>
+                entry.id !== existingEntry.id ? entry : returnedEntry
+            ))
+            setText('')
+            setMood(null)
+        })
+    } else {
+        const newEntry = {
+            date: date,
+            text: text,
+            mood: mood
+        }
+
+        entryService.create(newEntry).then(savedEntry => {
+            setEntries([savedEntry, ...entries])
+            setText('')
+            setMood(null)
+        })
+    }
 }
 
     return (
@@ -135,15 +165,27 @@ function Paivakirja() {
                         onChange={(event) => setText(event.target.value)}/>
                       </PaivakirjaText>
                       <PaivakirjaMoods>
-                        <button type="button" onClick={() => setMood('good')}>
-                          <img src={goodIcon} alt="Hyvä" />
-                        </button>
-                        <button type="button" onClick={() => setMood('neutral')}>
-                          <img src={neutralIcon} alt="Neutraali" />
-                        </button>
-                        <button type="button" onClick={() => setMood('bad')}>
-                          <img src={badIcon} alt="Huono" />
-                        </button>
+                          <button
+                              type="button"
+                              className={mood === 'good' ? 'selected' : ''}
+                              onClick={() => setMood('good')}
+                          >
+                              <img src={goodIcon} alt="Hyvä" />
+                          </button>
+                          <button
+                              type="button"
+                              className={mood === 'neutral' ? 'selected' : ''}
+                              onClick={() => setMood('neutral')}
+                          >
+                              <img src={neutralIcon} alt="Neutraali" />
+                          </button>
+                          <button
+                              type="button"
+                              className={mood === 'bad' ? 'selected' : ''}
+                              onClick={() => setMood('bad')}
+                          >
+                              <img src={badIcon} alt="Huono" />
+                          </button>
                       </PaivakirjaMoods>
                       <Submit>
                         <button onClick={handleSubmit}>Lähetä</button>
@@ -166,12 +208,31 @@ const PaivakirjaMoods = styled.div`
     border: none;
     padding: 0;
     cursor: pointer;
+    border-radius: 50%;
+    transition: filter 0.2s, transform 0.2s;
+  }
+
+  button.selected {
+    filter: drop-shadow(0 0 8px var(--mood-glow-color));
+    transform: scale(1.1);
   }
 
   img {
     width: 40px;
     height: 40px;
   }
+`
+
+const VasenRyhma = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`
+
+const OikeaRyhma = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
 `
 
 const MerkintaRivi = styled.div`
