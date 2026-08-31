@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 import darkIcon from '../assets/dark_mode.svg'
 import lightIcon from '../assets/light_mode.svg'
+import smile from '../assets/smile.svg'
+import diary from '../assets/book.svg'
 
 function Etusivu() {
 
@@ -21,10 +23,10 @@ function Etusivu() {
       <StyledHeader>
         <h2>Tervetuloa</h2>
         {/* Näytetään aurinko/kuu-ikoni sen mukaan, kumpi teema on käytössä */}
-        <img 
-        src={darkMode ? darkIcon : lightIcon} 
-        alt={darkMode ? 'dark mode' : 'light mode'}
-        style={!darkMode ? { filter: 'brightness(0.5)' } : undefined}
+        <img
+          src={darkMode ? darkIcon : lightIcon}
+          alt={darkMode ? 'dark mode' : 'light mode'}
+          style={!darkMode ? { filter: 'brightness(0.5)' } : undefined}
         />
         {/* Dark mode -kytkin */}
         <ThemeSwitch>
@@ -40,7 +42,11 @@ function Etusivu() {
       <ValintaBoksit>
         <Lootat>
           <div>
-            <Link to="/mielialatracker"><button>Mieliala tracker</button></Link>
+            <IconOtsikko>
+              <img src={smile} alt="hymy" />
+              <p>Mieliala tracker</p>
+            </IconOtsikko>
+            <Link to="/mielialatracker"><button>Aloita seuranta</button></Link>
             <TekstiLoota>
               <p>
                 Seuraa omaa hyvinvointiasi päivittäin. Valitse päivämäärä, arvioi
@@ -53,7 +59,11 @@ function Etusivu() {
         </Lootat>
         <Lootat>
           <div>
-            <Link to="/paivakirja"><button>Päiväkirja</button></Link>
+            <IconOtsikko>
+              <img src={diary} alt="päiväkirja" />
+              <p>Päiväkirja</p>
+            </IconOtsikko>
+            <Link to="/paivakirja"><button>Avaa päiväkirja</button></Link>
             <TekstiLoota>
               <p>
                 Kirjaa ajatuksiasi ja päivän tapahtumia omaan päiväkirjaan. Valitse
@@ -217,6 +227,30 @@ const ValintaBoksit = styled.div`
     @media (max-width: 1200px) {
         flex-direction: column;
         align-items: center;
+    }
+`
+
+const IconOtsikko = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    img {
+        width: 25px;
+        height: 25px;
+        margin: 0;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    :root[data-theme='light'] & img {
+        filter: brightness(0);
     }
 `
 
