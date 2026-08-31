@@ -1,66 +1,13 @@
 import entryService from '../services/paivakirjaService'
+import { EntriesList } from '../components/PaivakirjaComponents'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
-import trashIcon from '../assets/trash.svg'
 import darkIcon from '../assets/dark_mode.svg'
 import lightIcon from '../assets/light_mode.svg'
-import goodIcon from '../assets/good.svg';
-import neutralIcon from '../assets/neutral.svg';
-import badIcon from '../assets/bad.svg';
-
-const getMoodIcon = (mood) => {
-    if (mood === 'good') return goodIcon
-    if (mood === 'neutral') return neutralIcon
-    if (mood === 'bad') return badIcon
-    return null
-}
-
-const EntryRow = ({ entry, removeEntry }) => {
-    const [open, setOpen] = useState(false)
-
-    return (
-          <MerkintaRivi>
-              <MerkintaYlarivi>
-              <VasenRyhma>
-                  <span>{entry.date}</span>
-                  <img
-                      src={getMoodIcon(entry.mood)}
-                      alt={entry.mood}
-                      style={{ width: '24px', height: '24px' }}
-                  />
-              </VasenRyhma>
-              <OikeaRyhma>
-                  <ToggleButton onClick={() => setOpen(!open)}>
-                      {open ? 'Sulje' : 'Näytä lisää'}
-                  </ToggleButton>
-                  <RemoveButton onClick={() => removeEntry(entry.id)}>
-                      <img src={trashIcon} alt="poista" />
-                  </RemoveButton>
-              </OikeaRyhma>
-          </MerkintaYlarivi>
-
-            {open && (
-                <EntryTeksti>{entry.text}</EntryTeksti>
-            )}
-        </MerkintaRivi>
-    )
-}
-
-const EntriesList = ({ entries, removeEntry }) => {
-    return (
-        <Merkinnat>
-            <h2>Viimeisimmät merkinnät</h2>
-            {entries.length === 0 ? (
-                <p>Ei vielä merkintöjä.</p>
-            ) : (
-                entries.map((entry) => (
-                    <EntryRow key={entry.id} entry={entry} removeEntry={removeEntry} />
-                ))
-            )}
-        </Merkinnat>
-    )
-}
+import goodIcon from '../assets/good.svg'
+import neutralIcon from '../assets/neutral.svg'
+import badIcon from '../assets/bad.svg'
 
 function Paivakirja() {
     //dark teema
@@ -71,7 +18,7 @@ function Paivakirja() {
     const [mood, setMood] = useState(null)
 
     useEffect(() => {
-    entryService.getAll().then(data => setEntries(data))
+        entryService.getAll().then(data => setEntries(data))
     }, [])
 
     useEffect(() => {
@@ -80,57 +27,57 @@ function Paivakirja() {
     }, [darkMode])
 
     const removeEntry = (id) => {
-    if (window.confirm('Poistetaanko merkintä?')) {
-        entryService.remove(id).then(() => {
-            setEntries(entries.filter(entry => entry.id !== id))
-        })
-    }
-}
-
-const handleSubmit = () => {
-    if (!text.trim() || !mood) {
-        alert('Kirjoita mietteet ja valitse mieliala ennen lähettämistä.')
-        return
+        if (window.confirm('Poistetaanko merkintä?')) {
+            entryService.remove(id).then(() => {
+                setEntries(entries.filter(entry => entry.id !== id))
+            })
+        }
     }
 
-    const existingEntry = entries.find(entry => entry.date === date)
-
-    if (existingEntry) {
-        const confirmUpdate = window.confirm(
-            `Tälle päivälle (${date}) on jo merkintä. Haluatko päivittää sen?`
-        )
-
-        if (!confirmUpdate) {
+    const handleSubmit = () => {
+        if (!text.trim() || !mood) {
+            alert('Kirjoita mietteet ja valitse mieliala ennen lähettämistä.')
             return
         }
 
-        const updatedEntry = {
-            ...existingEntry,
-            text: text,
-            mood: mood
-        }
+        const existingEntry = entries.find(entry => entry.date === date)
 
-        entryService.update(existingEntry.id, updatedEntry).then(returnedEntry => {
-            setEntries(entries.map(entry =>
-                entry.id !== existingEntry.id ? entry : returnedEntry
-            ))
-            setText('')
-            setMood(null)
-        })
-    } else {
-        const newEntry = {
-            date: date,
-            text: text,
-            mood: mood
-        }
+        if (existingEntry) {
+            const confirmUpdate = window.confirm(
+                `Tälle päivälle (${date}) on jo merkintä. Haluatko päivittää sen?`
+            )
 
-        entryService.create(newEntry).then(savedEntry => {
-            setEntries([savedEntry, ...entries])
-            setText('')
-            setMood(null)
-        })
+            if (!confirmUpdate) {
+                return
+            }
+
+            const updatedEntry = {
+                ...existingEntry,
+                text: text,
+                mood: mood
+            }
+
+            entryService.update(existingEntry.id, updatedEntry).then(returnedEntry => {
+                setEntries(entries.map(entry =>
+                    entry.id !== existingEntry.id ? entry : returnedEntry
+                ))
+                setText('')
+                setMood(null)
+            })
+        } else {
+            const newEntry = {
+                date: date,
+                text: text,
+                mood: mood
+            }
+
+            entryService.create(newEntry).then(savedEntry => {
+                setEntries([savedEntry, ...entries])
+                setText('')
+                setMood(null)
+            })
+        }
     }
-}
 
     return (
         <>
@@ -157,39 +104,40 @@ const handleSubmit = () => {
                     <h2>Mille päivälle haluat lisätä merkinnän?</h2>
                     <p>Oletuksena merkintä lisätään tälle päivämäärälle</p>
                     <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                      <h2>Kirjoita päivän mietteet</h2>
-                      <PaivakirjaText>
-                        <textarea 
-                        placeholder="Kirjoita päivän mietteet..."
-                        value={text}
-                        onChange={(event) => setText(event.target.value)}/>
-                      </PaivakirjaText>
-                      <PaivakirjaMoods>
-                          <button
-                              type="button"
-                              className={mood === 'good' ? 'selected' : ''}
-                              onClick={() => setMood('good')}
-                          >
-                              <img src={goodIcon} alt="Hyvä" />
-                          </button>
-                          <button
-                              type="button"
-                              className={mood === 'neutral' ? 'selected' : ''}
-                              onClick={() => setMood('neutral')}
-                          >
-                              <img src={neutralIcon} alt="Neutraali" />
-                          </button>
-                          <button
-                              type="button"
-                              className={mood === 'bad' ? 'selected' : ''}
-                              onClick={() => setMood('bad')}
-                          >
-                              <img src={badIcon} alt="Huono" />
-                          </button>
-                      </PaivakirjaMoods>
-                      <Submit>
+                    <h2>Kirjoita päivän mietteet</h2>
+                    <PaivakirjaText>
+                        <textarea
+                            placeholder="Kirjoita päivän mietteet..."
+                            value={text}
+                            onChange={(event) => setText(event.target.value)}
+                        />
+                    </PaivakirjaText>
+                    <PaivakirjaMoods>
+                        <button
+                            type="button"
+                            className={mood === 'good' ? 'selected' : ''}
+                            onClick={() => setMood('good')}
+                        >
+                            <img src={goodIcon} alt="Hyvä" />
+                        </button>
+                        <button
+                            type="button"
+                            className={mood === 'neutral' ? 'selected' : ''}
+                            onClick={() => setMood('neutral')}
+                        >
+                            <img src={neutralIcon} alt="Neutraali" />
+                        </button>
+                        <button
+                            type="button"
+                            className={mood === 'bad' ? 'selected' : ''}
+                            onClick={() => setMood('bad')}
+                        >
+                            <img src={badIcon} alt="Huono" />
+                        </button>
+                    </PaivakirjaMoods>
+                    <Submit>
                         <button onClick={handleSubmit}>Lähetä</button>
-                      </Submit>
+                    </Submit>
                 </Valinnat>
                 <EntriesList entries={entries} removeEntry={removeEntry} />
             </MoodBoksit>
@@ -221,69 +169,6 @@ const PaivakirjaMoods = styled.div`
     width: 40px;
     height: 40px;
   }
-`
-
-const VasenRyhma = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-`
-
-const OikeaRyhma = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-`
-
-const MerkintaRivi = styled.div`
-    color: var(--text);
-    padding: 15px;
-    border-radius: 5px;
-    margin-top: 10px;
-    border: 1px solid var(--input-border);
-`
-
-const MerkintaYlarivi = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-`
-
-const EntryTeksti = styled.p`
-    margin-top: 10px;
-    margin-bottom: 0;
-    padding-left: 5px;
-    overflow-wrap: break-word;
-    word-break: break-word;
-`
-
-const ToggleButton = styled.button`
-    background: none;
-    border: 1px solid var(--input-border);
-    border-radius: 5px;
-    padding: 4px 10px;
-    cursor: pointer;
-    color: var(--text);
-    font-size: 12px;
-`
-
-const MerkintaOikea = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 15px;
-`
-
-const RemoveButton = styled.button`
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-
-    img {
-        width: 20px;
-        height: 20px;
-    }
 `
 
 const PaivakirjaText = styled.div`
@@ -381,7 +266,6 @@ const Valinnat = styled.div`
     }
 `
 
-
 const ThemeSwitch = styled.label`
     position: relative;
     display: inline-block;
@@ -424,28 +308,6 @@ const ThemeSwitch = styled.label`
 
     input:checked + .slider::before {
         transform: translateX(20px);
-    }
-`
-
-const Merkinnat = styled.div`
-    background-color: var(--card-bg);
-    color: var(--text);
-    padding: 15px;
-    border-radius: 10px;
-    width: 40rem;
-    overflow-y: scroll;
-    height: 420px;
-    box-shadow: 5px 5px var(--shadow);
-    min-height: 450px;
-
-    /* Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: var(--input-border) transparent;
-
-    @media (max-width: 1200px) {
-        width: 90%;
-        max-width: 30rem;
-        margin-top: 10px;
     }
 `
 
