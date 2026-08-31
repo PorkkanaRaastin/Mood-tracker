@@ -17,15 +17,18 @@ function Paivakirja() {
     const [text, setText] = useState('')
     const [mood, setMood] = useState(null)
 
+    //haetaan kaikki merkinnät palvelimelta
     useEffect(() => {
         entryService.getAll().then(data => setEntries(data))
     }, [])
 
+    //teeman vaihto ja antribuutin päivitys
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
         localStorage.setItem('darkMode', darkMode)
     }, [darkMode])
 
+    //poistaa merkinnän käyttäjän hyväksymisen jälkeen
     const removeEntry = (id) => {
         if (window.confirm('Poistetaanko merkintä?')) {
             entryService.remove(id).then(() => {
@@ -34,6 +37,7 @@ function Paivakirja() {
         }
     }
 
+    //lähetys logiikka jossa tarkistetaan luodaanko uusi merkintä vai päivitetäänkö vanhaa
     const handleSubmit = () => {
         if (!text.trim() || !mood) {
             alert('Kirjoita mietteet ja valitse mieliala ennen lähettämistä.')
@@ -41,7 +45,8 @@ function Paivakirja() {
         }
 
         const existingEntry = entries.find(entry => entry.date === date)
-
+        
+        //kysytään halutaanko päivittää merkintä
         if (existingEntry) {
             const confirmUpdate = window.confirm(
                 `Tälle päivälle (${date}) on jo merkintä. Haluatko päivittää sen?`
@@ -50,13 +55,15 @@ function Paivakirja() {
             if (!confirmUpdate) {
                 return
             }
-
+            
+            //päivitetään merkintä mikäli päivitys hyväksytään
             const updatedEntry = {
                 ...existingEntry,
                 text: text,
                 mood: mood
             }
-
+            
+            //lähetetään päivitys palvelimelle
             entryService.update(existingEntry.id, updatedEntry).then(returnedEntry => {
                 setEntries(entries.map(entry =>
                     entry.id !== existingEntry.id ? entry : returnedEntry
@@ -64,7 +71,7 @@ function Paivakirja() {
                 setText('')
                 setMood(null)
             })
-        } else {
+        } else { //ei aijempaa päivitystä -> lisätään uusi merkintä
             const newEntry = {
                 date: date,
                 text: text,
@@ -80,7 +87,7 @@ function Paivakirja() {
     }
 
     return (
-        <>
+        <> 
             <StyledHeader>
                 <Link to="/"><button>Etusivu</button></Link>
                 <h3>Päiväkirja</h3>
