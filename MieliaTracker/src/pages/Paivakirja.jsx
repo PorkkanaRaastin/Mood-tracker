@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import trashIcon from '../assets/trash.svg'
 import darkIcon from '../assets/dark_mode.svg'
 import lightIcon from '../assets/light_mode.svg'
+import goodIcon from '../assets/good.svg';
+import neutralIcon from '../assets/neutral.svg';
+import badIcon from '../assets/bad.svg';
 
 const EntriesList = ({ entries, removeEntry }) => {
     return (
@@ -78,8 +81,24 @@ function Paivakirja() {
                     <ChooseDate type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                       <h2>Kirjoita päivän mietteet</h2>
                       <PaivakirjaText>
-                        <input placeholder="Kirjoita päivän mietteet..." type="text" name="" id="" />
+                        <textarea placeholder="Kirjoita päivän mietteet..." type="text" name="" id="" />
                       </PaivakirjaText>
+                      <PaivakirjaMoods>
+                        <PaivakirjaMoods>
+                          <button type="button">
+                            <img src={goodIcon} alt="Hyvä" />
+                          </button>
+                          <button type="button">
+                            <img src={neutralIcon} alt="Neutraali" />
+                          </button>
+                          <button type="button">
+                            <img src={badIcon} alt="Huono" />
+                          </button>
+                        </PaivakirjaMoods>
+                      </PaivakirjaMoods>
+                      <Submit>
+                        <button>Lähetä</button>
+                      </Submit>
                 </Valinnat>
                 <EntriesList entries={entries} removeEntry={removeEntry} />
             </MoodBoksit>
@@ -87,11 +106,30 @@ function Paivakirja() {
     )
 }
 
+const PaivakirjaMoods = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
+`
+
 const PaivakirjaText = styled.div`
   display: flex;
   justify-content: center;
 
-  input {
+  textarea {
     margin-top: 20px;
     height: 50px;
     width: 300px;
@@ -128,6 +166,22 @@ const StyledHeader = styled.header`
         color: var(--a);
     }
     a button {
+        border: none;
+        background-color: rgb(126, 24, 177);
+        box-shadow: 3px 2px rgb(189, 141, 213);
+        color: white;
+        border-radius: 5px;
+        padding: 7px;
+        cursor: pointer;
+    }
+`
+
+const Submit = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+
+    button {
         border: none;
         background-color: rgb(126, 24, 177);
         box-shadow: 3px 2px rgb(189, 141, 213);
